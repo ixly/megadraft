@@ -348,7 +348,7 @@ export default class MegadraftEditor extends Component {
           onBlur={this.handleBlur}
           onFocus={this.handleFocus}
         >
-          {this.renderSidebar({
+          { this.props.showSidebar != false && this.renderSidebar({
             plugins: this.plugins,
             editorState: this.props.editorState,
             readOnly: this.state.readOnly,
