@@ -2,6 +2,18 @@
 
 Rich Text editor built on top of [Facebook's draft.js](https://github.com/facebook/draft-js) (Work in Progress)
 
+## This fork changes
+
+1. Additional toolbar buttons: Underlined text, Stroke text, Inline code, Code block, H3, H4
+2. Sidebar adding can be managed with `showSidebar` option:
+    ```
+    <MegadraftEditor
+        editorState={this.state.editorState}
+        showSidebar={false}
+        onChange={::this.onChange} />
+    ```
+3. Clean white style theme
+
 ## Discussion and Support
 
 Join the [#megadraft][megadraft-slack] channel on the DraftJS [Slack team][draftjs-slack]!
