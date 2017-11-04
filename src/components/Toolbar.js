@@ -275,10 +275,14 @@ export default class Toolbar extends Component {
       return null;
     }
 
-    const toolbarClass = classNames("toolbar", {
+    let toolbarClass = classNames("toolbar", {
       "toolbar--open": this.state.show,
       "toolbar--error": this.state.error
     });
+
+    if (this.props.theme) {
+      toolbarClass = toolbarClass + ' ' + this.props.theme + '-theme'
+    }
 
     return (
       <div

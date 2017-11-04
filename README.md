@@ -12,7 +12,25 @@ Rich Text editor built on top of [Facebook's draft.js](https://github.com/facebo
         showSidebar={false}
         onChange={::this.onChange} />
     ```
-3. Clean white style theme
+3. Changeable themes. Just add theme styles like this:
+
+    ```
+    .toolbar.white-thin-theme {
+        ... your styles
+    }
+    ```
+
+    and specify the theme on editor initializing
+
+
+    ```
+    <MegadraftEditor
+        editorState={this.state.editorState}
+        theme='white-thin'
+        onChange={::this.onChange} />
+    ```
+4. White thin theme
+    ![white thin theme](https://i.imgur.com/i6Y4E1H.png)
 
 ## Discussion and Support
 
