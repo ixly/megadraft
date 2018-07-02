@@ -31,6 +31,32 @@ Rich Text editor built on top of [Facebook's draft.js](https://github.com/facebo
     ```
 4. White thin theme
     ![white thin theme](https://i.imgur.com/i6Y4E1H.png)
+    
+5. Allow to submit images from hard drive to remote server. Originally only URLs are supported.
+
+    ```
+    <MegadraftEditor
+        ...
+        submitFileUrl={this.props.submit_file_url} />
+    ```
+    
+    `submitFileUrl` route should accept POST requests with file passed in a parameter named `file` and return JSON object containing status and url to stored image. Example response: 
+    ```
+    { 
+        status: 'success', 
+        body: 'http://stored-image.url'
+    }
+    ```
+6. Allow to hide "Rights Holder" input line on data blocks. Is hidden by default, to enable:
+    ```
+    <MegadraftEditor
+        ...
+        showDataRightsHolder={true} />
+    ``` 
+7. Respect `readOnly` option on data blocks. In `readOnly` mode `Caption` input is non-editable and control buttons are hidden.
+8. Respect chosen data block size. `Small` is 40% wide, `Medium` is 70% wide and `Big` is full-width.
+9. Allow to attach YouTube and Vimeo videos. Originally only direct video urls are supported.
+    
 
 ## Discussion and Support
 
