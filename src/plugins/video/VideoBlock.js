@@ -24,6 +24,7 @@ export default class VideoBlock extends Component {
 
     this._handleCaptionChange = ::this._handleCaptionChange;
     this.renderCaptionBlock = ::this.renderCaptionBlock;
+    this.renderVideo = ::this.renderVideo;
 
     this.actions = [
       {"key": "delete", "icon": icons.DeleteIcon, "action": this.props.container.remove}
@@ -49,11 +50,50 @@ export default class VideoBlock extends Component {
     }
   }
 
+  renderVideo() {
+    const youtubeRegexp = /(youtu\.be\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v)\/))([^\?&"'>]+)/;
+    const vimeoRegexp = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
+    const url = this.props.data.src;
+
+    if (url.match(youtubeRegexp)) {
+      const identifier = url.match(youtubeRegexp)[5];
+
+      return (
+        <div style={{padding: '56.25% 0 0 0', position: 'relative'}}>
+          <iframe src={'https://www.youtube-nocookie.com/embed/' + identifier + '?rel=0&showinfo=0'}
+                  style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}
+                  frameBorder='0'
+                  allow='autoplay; encrypted-media'
+                  webkitallowfullscreen='true'
+                  mozallowfullscreen='true'
+                  allowFullScreen></iframe>
+        </div>
+      )
+    } else if (url.match(vimeoRegexp)) {
+      const identifier = url.match(vimeoRegexp)[3];
+
+      return (
+        <div style={{padding: '56.25% 0 0 0', position: 'relative'}}>
+          <iframe src={'https://player.vimeo.com/video/' + identifier + '?title=0&byline=0&portrait=0'}
+                  style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}
+                  frameBorder='0'
+                  webkitallowfullscreen='true'
+                  mozallowfullscreen='true'
+                  allowFullScreen></iframe>
+        </div>
+      )
+    } else {
+      return (
+        <video controls style={VideoBlockStyle.video} src={url} alt={this.props.data.caption}/>
+      )
+    }
+  }
+
   render() {
     return (
       <CommonBlock {...this.props} actions={this.actions}>
         <BlockContent>
-          <video controls style={VideoBlockStyle.video} src={this.props.data.src} alt=""/>
+          { this.renderVideo() }
         </BlockContent>
 
         <BlockData>
