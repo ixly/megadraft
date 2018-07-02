@@ -24,6 +24,7 @@ export default class ImageBlock extends Component {
 
     this._handleCaptionChange = ::this._handleCaptionChange;
     this._handleRightsHolderChange = ::this._handleRightsHolderChange;
+    this.renderCaptionBlock = ::this.renderCaptionBlock;
     this.renderRightsHolderBlock = ::this.renderRightsHolderBlock;
 
     this.actions = [
@@ -39,6 +40,21 @@ export default class ImageBlock extends Component {
   _handleRightsHolderChange(event) {
     event.stopPropagation();
     this.props.container.updateData({rightsHolder: event.target.value});
+  }
+
+  renderCaptionBlock() {
+    if (this.props.blockProps.editorReadOnly) {
+      return (
+        <p className="caption-readonly">{this.props.data.caption}</p>
+      )
+    } else {
+      return (
+        <BlockInput
+          placeholder="Caption"
+          value={this.props.data.caption}
+          onChange={this._handleCaptionChange} />
+      )
+    }
   }
 
   renderRightsHolderBlock() {
@@ -58,11 +74,7 @@ export default class ImageBlock extends Component {
         </BlockContent>
 
         <BlockData>
-          <BlockInput
-            placeholder="Caption"
-            value={this.props.data.caption}
-            onChange={this._handleCaptionChange} />
-
+          { this.renderCaptionBlock() }
           { this.props.blockProps.showDataRightsHolder && this.renderRightsHolderBlock() }
         </BlockData>
       </CommonBlock>

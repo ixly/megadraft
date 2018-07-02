@@ -310,7 +310,8 @@ export default class MegadraftEditor extends Component {
         getReadOnly: this.getReadOnly,
         getInitialReadOnly: this.getInitialReadOnly,
         setInitialReadOnly: this.setInitialReadOnly,
-        showDataRightsHolder: this.props.showDataRightsHolder
+        showDataRightsHolder: this.props.showDataRightsHolder,
+        editorReadOnly: this.props.readOnly
       }
     };
   }

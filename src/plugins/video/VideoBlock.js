@@ -23,6 +23,7 @@ export default class VideoBlock extends Component {
     super(props);
 
     this._handleCaptionChange = ::this._handleCaptionChange;
+    this.renderCaptionBlock = ::this.renderCaptionBlock;
 
     this.actions = [
       {"key": "delete", "icon": icons.DeleteIcon, "action": this.props.container.remove}
@@ -33,6 +34,21 @@ export default class VideoBlock extends Component {
     this.props.container.updateData({caption: event.target.value});
   }
 
+  renderCaptionBlock() {
+    if (this.props.blockProps.editorReadOnly) {
+      return (
+        <p className="caption-readonly">{this.props.data.caption}</p>
+      )
+    } else {
+      return (
+        <BlockInput
+          placeholder="Caption"
+          value={this.props.data.caption}
+          onChange={this._handleCaptionChange} />
+      )
+    }
+  }
+
   render() {
     return (
       <CommonBlock {...this.props} actions={this.actions}>
@@ -41,10 +57,7 @@ export default class VideoBlock extends Component {
         </BlockContent>
 
         <BlockData>
-          <BlockInput
-            placeholder="Caption"
-            value={this.props.data.caption}
-            onChange={this._handleCaptionChange} />
+          { this.renderCaptionBlock() }
         </BlockData>
       </CommonBlock>
     );

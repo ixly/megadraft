@@ -37,19 +37,21 @@ export default class CommonBlock extends Component {
     };
     let options = this.props.blockProps.plugin.options || {};
     options = {...defaults, ...options};
+    const selectedDisplay = data.display || options.defaultDisplay;
 
     return (
       <BlockWrapper>
-        <BlockControls>
-          <Dropdown
-            items={options.displayOptions}
-            selected={data.display || options.defaultDisplay}
-            onChange={this._handleDisplayChange} />
+        { !this.props.blockProps.editorReadOnly &&
+            <BlockControls>
+              <Dropdown
+                items={options.displayOptions}
+                selected={selectedDisplay}
+                onChange={this._handleDisplayChange} />
 
-          <BlockActionGroup items={this.props.actions} />
-        </BlockControls>
+              <BlockActionGroup items={this.props.actions} />
+            </BlockControls> }
 
-        {this.props.children}
+        { this.props.children }
       </BlockWrapper>
     );
   }
