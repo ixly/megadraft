@@ -14,23 +14,52 @@ export default class BlockButton extends Component {
   constructor(props) {
     super(props);
     this.onClick = ::this.onClick;
+    this.onChange = ::this.onChange;
   }
 
   onClick(e) {
-    e.preventDefault();
-    const src = window.prompt("Enter a URL");
-    if (!src) {
-      return;
+    if (this.props.submitFileUrl) {
+      document.getElementById("megapdraft-file-hidden-input").click()
+    } else {
+      const src = window.prompt("Enter a URL");
+      if (!src) { return };
+
+      const data = { src: src, type: "image", display: "medium" };
+      this.props.onChange(insertDataBlock(this.props.editorState, data));
     }
+  }
 
-    const data = {src: src, type: "image", display: "medium"};
+  onChange(e) {
+    e.preventDefault();
+    const file = document.getElementById("megapdraft-file-hidden-input").files[0]
+    const self = this;
 
-    this.props.onChange(insertDataBlock(this.props.editorState, data));
+    if (file) {
+      const fd = new FormData();
+      fd.append('file', file);
+
+      $.ajax({
+        type: 'POST',
+        url: this.props.submitFileUrl,
+        contentType: false,
+        processData: false,
+        data: fd,
+        success: function success(response) {
+          const src = response.body
+          if (!src) { return };
+
+          const data = { src: src, type: "image", display: "medium" };
+          self.props.onChange(insertDataBlock(self.props.editorState, data));
+        }
+      });
+    }
   }
 
   render() {
     return (
       <button className={this.props.className} type="button" onClick={this.onClick} title={this.props.title}>
+        { this.props.submitFileUrl &&
+          <input type='file' id='megapdraft-file-hidden-input' style={{'display':'none'}} onChange={this.onChange} /> }
         <icons.ImageIcon className="sidemenu__button__icon" />
       </button>
     );

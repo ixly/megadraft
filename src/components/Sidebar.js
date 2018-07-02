@@ -50,7 +50,8 @@ class BlockStyles extends Component {
         onCloseRequest={this.props.onClose}
         onChange={this.onChange}
         editorState={this.props.editorState}
-        modalOptions={this.props.modalOptions}/>
+        modalOptions={this.props.modalOptions}
+        submitFileUrl={this.props.submitFileUrl} />
     );
   }
 
@@ -71,7 +72,8 @@ class BlockStyles extends Component {
           className="sidemenu__button"
           title={item.title}
           editorState={this.props.editorState}
-          onChange={this.onChange}/>
+          onChange={this.onChange}
+          submitFileUrl={this.props.submitFileUrl} />
       </li>
     );
   }
@@ -152,7 +154,8 @@ export class SideMenu extends Component {
           open={this.state.open}
           onChange={this.onChange}
           maxSidebarButtons={this.props.maxSidebarButtons}
-          modalOptions={this.props.modalOptions} />
+          modalOptions={this.props.modalOptions}
+          submitFileUrl={this.props.submitFileUrl} />
       </li>
     );
   }
@@ -242,7 +245,8 @@ export default class SideBar extends Component {
               onChange={this.onChange}
               plugins={this.getValidSidebarPlugins()}
               maxSidebarButtons={this.props.maxSidebarButtons}
-              modalOptions={this.props.modalOptions} />
+              modalOptions={this.props.modalOptions}
+              submitFileUrl={this.props.submitFileUrl} />
           </ul>
         </div>
       </div>
