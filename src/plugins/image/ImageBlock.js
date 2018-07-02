@@ -24,6 +24,7 @@ export default class ImageBlock extends Component {
 
     this._handleCaptionChange = ::this._handleCaptionChange;
     this._handleRightsHolderChange = ::this._handleRightsHolderChange;
+    this.renderRightsHolderBlock = ::this.renderRightsHolderBlock;
 
     this.actions = [
       {"key": "delete", "icon": icons.DeleteIcon, "action": this.props.container.remove}
@@ -40,6 +41,15 @@ export default class ImageBlock extends Component {
     this.props.container.updateData({rightsHolder: event.target.value});
   }
 
+  renderRightsHolderBlock() {
+    return (
+      <BlockInput
+        placeholder="Rights Holder"
+        value={this.props.data.rightsHolder}
+        onChange={this._handleRightsHolderChange} />
+    )
+  }
+
   render(){
     return (
       <CommonBlock {...this.props} actions={this.actions}>
@@ -53,10 +63,7 @@ export default class ImageBlock extends Component {
             value={this.props.data.caption}
             onChange={this._handleCaptionChange} />
 
-          <BlockInput
-            placeholder="Rights Holder"
-            value={this.props.data.rightsHolder}
-            onChange={this._handleRightsHolderChange} />
+          { this.props.blockProps.showDataRightsHolder && this.renderRightsHolderBlock() }
         </BlockData>
       </CommonBlock>
     );
