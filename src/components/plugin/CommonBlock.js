@@ -40,7 +40,7 @@ export default class CommonBlock extends Component {
     const selectedDisplay = data.display || options.defaultDisplay;
 
     return (
-      <BlockWrapper>
+      <BlockWrapper display={selectedDisplay}>
         { !this.props.blockProps.editorReadOnly &&
             <BlockControls>
               <Dropdown

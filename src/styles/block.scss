@@ -8,6 +8,18 @@
   padding: 8px;
   margin: -8px;
 
+  &.small {
+    width: 40%;
+    display: inline-block;
+    margin-left: 30%;
+  }
+
+  &.medium {
+    width: 70%;
+    display: inline-block;
+    margin-left: 15%;
+  }
+
   &:hover {
     background-color: #eee;
     border-radius: 4px;
