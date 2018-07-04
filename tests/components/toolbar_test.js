@@ -240,16 +240,14 @@ describe("Toolbar Component", () => {
     });
 
     it("should center toolbar above the selection", () => {
-      const minOffsetRight = 5;
-
       replaceSelection({focusOffset: 0, anchorOffset: 5}, testContext.wrapper);
 
       const toolbarWrapper = testContext.wrapper.find(".toolbar");
       const toolbarWrapperNode = toolbarWrapper.getDOMNode();
       testContext.clock.advanceTimersByTime(32);
 
-      expect(toolbarWrapperNode.style.top).toEqual("-14px");
-      expect(toolbarWrapperNode.style.left).toEqual(minOffsetRight + "px");
+      expect(toolbarWrapperNode.style.bottom).toEqual("14px");
+      expect(toolbarWrapperNode.style.left).toEqual("0.5px");
     });
 
     describe("entity inputs", () => {
