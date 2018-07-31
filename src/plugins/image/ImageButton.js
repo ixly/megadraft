@@ -13,13 +13,18 @@ import insertDataBlock from "../../insertDataBlock";
 export default class BlockButton extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      fileFieldId: btoa(Math.random()).substring(0,12)
+    };
+
     this.onClick = ::this.onClick;
     this.onChange = ::this.onChange;
   }
 
   onClick(e) {
     if (this.props.submitFileUrl) {
-      document.getElementById("megapdraft-file-hidden-input").click()
+      document.getElementById(`megapdraft-file-hidden-input-${this.state.fileFieldId}`).click()
     } else {
       const src = window.prompt("Enter a URL");
       if (!src) { return };
@@ -31,7 +36,7 @@ export default class BlockButton extends Component {
 
   onChange(e) {
     e.preventDefault();
-    const file = document.getElementById("megapdraft-file-hidden-input").files[0]
+    const file = document.getElementById(`megapdraft-file-hidden-input-${this.state.fileFieldId}`).files[0]
     let src;
 
     if (file) {
@@ -59,7 +64,10 @@ export default class BlockButton extends Component {
     return (
       <button className={this.props.className} type="button" onClick={this.onClick} title={this.props.title}>
         { this.props.submitFileUrl &&
-          <input type='file' id='megapdraft-file-hidden-input' style={{'display':'none'}} onChange={this.onChange} /> }
+          <input type='file'
+                 id={`megapdraft-file-hidden-input-${this.state.fileFieldId}`}
+                 style={{'display':'none'}}
+                 onChange={this.onChange} /> }
         <icons.ImageIcon className="sidemenu__button__icon" />
       </button>
     );
