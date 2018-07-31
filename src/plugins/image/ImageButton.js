@@ -32,7 +32,7 @@ export default class BlockButton extends Component {
   onChange(e) {
     e.preventDefault();
     const file = document.getElementById("megapdraft-file-hidden-input").files[0]
-    const self = this;
+    let src;
 
     if (file) {
       const fd = new FormData();
@@ -44,14 +44,14 @@ export default class BlockButton extends Component {
         contentType: false,
         processData: false,
         data: fd,
+        async: false,
         success: function success(response) {
-          const src = response.body
-          if (!src) { return };
-
-          const data = { src: src, type: "image", display: "medium" };
-          self.props.onChange(insertDataBlock(self.props.editorState, data));
+          src = response.body;
         }
       });
+
+      const data = { src: src, type: "image", display: "medium" };
+      this.props.onChange(insertDataBlock(this.props.editorState, data));
     }
   }
 
