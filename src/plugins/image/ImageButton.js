@@ -62,7 +62,7 @@ export default class BlockButton extends Component {
 
   render() {
     return (
-      <button className={this.props.className} type="button" onClick={this.onClick} title={this.props.title}>
+      <button className={this.props.className} type="button" onClick={this.onClick} title={this.props.title} tabIndex="-1">
         { this.props.submitFileUrl &&
           <input type='file'
                  id={`megapdraft-file-hidden-input-${this.state.fileFieldId}`}
