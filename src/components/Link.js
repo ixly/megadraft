@@ -12,7 +12,7 @@ export default class Link extends Component {
     const contentState = this.props.contentState;
     const {url} = contentState.getEntity(this.props.entityKey).getData();
     return (
-      <a className="editor__link" href={url} title={url}>
+      <a className="editor__link" target="_blank" href={url} title={url}>
         {this.props.children}
       </a>
     );
