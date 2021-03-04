@@ -6,14 +6,20 @@
 
 import React from "react";
 
-
 export default class extends React.Component {
   render() {
     return (
-      <span style={{fontWeight: 600, verticalAlign: 'super', fontSize: '1.25em', lineHeight: '30px', textDecoration: 'line-through'}}>S</span>
+      <span
+        style={{
+          fontWeight: 600,
+          verticalAlign: "super",
+          fontSize: "1.25em",
+          lineHeight: "30px",
+          textDecoration: "line-through"
+        }}
+      >
+        S
+      </span>
     );
   }
 }
-
-
-

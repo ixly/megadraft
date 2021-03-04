@@ -5,19 +5,17 @@
  */
 
 import jsdom from "jsdom";
-import {configure} from "enzyme";
+import { configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 
-const {JSDOM} = jsdom;
+const { JSDOM } = jsdom;
 const dom = new JSDOM("<!doctype html><html><body></body></html>");
 global.document = dom.window.document;
 global.window = dom.window;
 global.self = global;
 global.performance = {};
 
-configure({adapter: new Adapter()});
-
-window.__ = arg => arg;
+configure({ adapter: new Adapter() });
 
 const node = {
   getAttribute: arg => true,
@@ -26,5 +24,5 @@ const node = {
 
 window.getSelection = () => ({
   rangeCount: 1,
-  getRangeAt: index => ({startContainer: [node]})
+  getRangeAt: index => ({ startContainer: [node] })
 });

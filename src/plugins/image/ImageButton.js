@@ -4,18 +4,17 @@
  * License: MIT
  */
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 
 import icons from "../../icons";
 import insertDataBlock from "../../insertDataBlock";
-
 
 export default class BlockButton extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      fileFieldId: btoa(Math.random()).substring(0,12)
+      fileFieldId: btoa(Math.random()).substring(0, 12)
     };
 
     this.onClick = ::this.onClick;
@@ -24,10 +23,16 @@ export default class BlockButton extends Component {
 
   onClick(e) {
     if (this.props.submitFileUrl) {
-      document.getElementById(`megapdraft-file-hidden-input-${this.state.fileFieldId}`).click()
+      document
+        .getElementById(
+          `megapdraft-file-hidden-input-${this.state.fileFieldId}`
+        )
+        .click();
     } else {
       const src = window.prompt("Enter a URL");
-      if (!src) { return };
+      if (!src) {
+        return;
+      }
 
       const data = { src: src, type: "image", display: "medium" };
       this.props.onChange(insertDataBlock(this.props.editorState, data));
@@ -36,15 +41,17 @@ export default class BlockButton extends Component {
 
   onChange(e) {
     e.preventDefault();
-    const file = document.getElementById(`megapdraft-file-hidden-input-${this.state.fileFieldId}`).files[0]
+    const file = document.getElementById(
+      `megapdraft-file-hidden-input-${this.state.fileFieldId}`
+    ).files[0];
     let src;
 
     if (file) {
       const fd = new FormData();
-      fd.append('file', file);
-
+      fd.append("file", file);
+      /*global $*/
       $.ajax({
-        type: 'POST',
+        type: "POST",
         url: this.props.submitFileUrl,
         contentType: false,
         processData: false,
@@ -62,12 +69,21 @@ export default class BlockButton extends Component {
 
   render() {
     return (
-      <button className={this.props.className} type="button" onClick={this.onClick} title={this.props.title} tabIndex="-1">
-        { this.props.submitFileUrl &&
-          <input type='file'
-                 id={`megapdraft-file-hidden-input-${this.state.fileFieldId}`}
-                 style={{'display':'none'}}
-                 onChange={this.onChange} /> }
+      <button
+        className={this.props.className}
+        type="button"
+        onClick={this.onClick}
+        title={this.props.title}
+        tabIndex="-1"
+      >
+        {this.props.submitFileUrl && (
+          <input
+            type="file"
+            id={`megapdraft-file-hidden-input-${this.state.fileFieldId}`}
+            style={{ display: "none" }}
+            onChange={this.onChange}
+          />
+        )}
         <icons.ImageIcon className="sidemenu__button__icon" />
       </button>
     );

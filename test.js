@@ -2,7 +2,8 @@
 
 process.env.NODE_ENV = "test";
 
-const jest = require("jest");
+const jest = require("jest"); // eslint-disable-line jest/no-jest-import
+
 const argv = process.argv.slice(2);
 
 // Watch unless on CI or in coverage mode

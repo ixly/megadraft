@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import {mount} from "enzyme";
+import { mount } from "enzyme";
 
 import MediaWrapper from "../../src/components/MediaWrapper";
 
@@ -31,11 +31,11 @@ describe("MediaWrapper", () => {
 
   it("enables readOnly on input focus", () => {
     testContext.input.simulate("focus");
-    expect(testContext.setReadOnly).toBeCalledWith(true);
+    expect(testContext.setReadOnly).toHaveBeenCalledWith(true);
   });
 
   it("restores readOnly on input blur", () => {
     testContext.input.simulate("blur");
-    expect(testContext.setInitialReadOnly).toBeCalled();
+    expect(testContext.setInitialReadOnly).toHaveBeenCalled();
   });
 });

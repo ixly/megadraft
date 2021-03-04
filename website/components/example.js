@@ -5,14 +5,10 @@
  */
 
 import React from "react";
-import PropTypes from "prop-types";
 
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import {grey300, grey900, white, indigo500} from "material-ui/styles/colors";
-
-import {MegadraftEditor} from "../../src/Megadraft";
-import {editorStateToJSON, editorStateFromRaw} from "../../src/utils";
-import {highlightCode} from "./highlightCode";
+import { MegadraftEditor } from "../../src/Megadraft";
+import { editorStateToJSON, editorStateFromRaw } from "../../src/utils";
+import { highlightCode } from "./highlightCode";
 
 import INITIAL_CONTENT from "./contentExample";
 
@@ -20,41 +16,32 @@ import relatedArticles from "megadraft-related-articles-plugin";
 import image from "../../src/plugins/image/plugin";
 import video from "../../src/plugins/video/plugin";
 
-
-const muiTheme = getMuiTheme({
-  fontFamily: "Roboto, sans-serif",
-  tabs: {
-    textColor: grey300,
-    selectedTextColor: grey900
-  },
-  palette: {
-    primary1Color: white,
-    accent1Color: indigo500
-  }
-});
-
 class Example extends React.Component {
-
   constructor(props) {
     super(props);
     const content = editorStateFromRaw(INITIAL_CONTENT);
-    this.keyBindings = [{
-      name: "save",
-      isKeyBound: (e) => {return e.keyCode === 83 && e.ctrlKey;},
-      action: () => {this.onSave();}
-    }];
+    this.keyBindings = [
+      {
+        name: "save",
+        isKeyBound: e => {
+          return e.keyCode === 83 && e.ctrlKey;
+        },
+        action: () => {
+          this.onSave();
+        }
+      }
+    ];
     this.resetStyleNewLine = true;
     this.state = {
-      value: content,
+      value: content
     };
     this.onChange = ::this.onChange;
-    this.onCodeActive = ::this.onCodeActive;
     this.maxSidebarButtons = null;
   }
 
-  getChildContext() {
-    return {muiTheme: getMuiTheme(muiTheme)};
-  }
+  onAction = args => {
+    console.log("onAction fired with args:", args);
+  };
 
   componentDidMount() {
     highlightCode(this);
@@ -70,10 +57,6 @@ class Example extends React.Component {
     console.log("save");
   }
 
-  onCodeActive() {
-    highlightCode(this);
-  }
-
   renderEditor() {
     return (
       <div className="tab-container-editor">
@@ -84,7 +67,10 @@ class Example extends React.Component {
           onChange={this.onChange}
           keyBindings={this.keyBindings}
           resetStyleNewLine={this.resetStyleNewLine}
-          maxSidebarButtons={this.maxSidebarButtons}/>
+          maxSidebarButtons={this.maxSidebarButtons}
+          onAction={this.onAction}
+          movableBlocks={true}
+        />
       </div>
     );
   }
@@ -92,7 +78,10 @@ class Example extends React.Component {
   renderJsonPreview() {
     return (
       <div>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/gruvbox-dark.min.css"/>
+        <link
+          rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/gruvbox-dark.min.css"
+        />
         <div className="tab-container-json">
           <pre className="jsonpreview">
             <code className="json hljs">
@@ -114,9 +103,5 @@ class Example extends React.Component {
 
 /* global hljs */
 hljs.initHighlightingOnLoad();
-
-Example.childContextTypes = {
-  muiTheme: PropTypes.object.isRequired
-};
 
 export default Example;

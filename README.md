@@ -1,6 +1,6 @@
 # Megadraft [![Build Status](https://secure.travis-ci.org/globocom/megadraft.png?branch=master)](https://travis-ci.org/globocom/megadraft) [![npm version](https://img.shields.io/npm/v/megadraft.svg?style=flat)](https://www.npmjs.com/package/megadraft)
 
-Rich Text editor built on top of [Facebook's draft.js](https://github.com/facebook/draft-js) (Work in Progress)
+Rich Text editor built on top of [Facebook's draft.js](https://github.com/facebook/draft-js)
 
 ## This fork changes
 
@@ -77,7 +77,7 @@ make setup
 make run
 ```
 
-Then visit http://localhost:8080/#/dev on your browser.
+Then visit http://localhost:8080/#/ on your browser.
 
 To run local tests:
 
@@ -118,8 +118,16 @@ Megadraft ships with a default styling available at this location in the install
 
 ## Plugins
 
-Checkout the [docs][docs-plugins] for information about plugin structure.
+Check out the [docs][docs-plugins] for information about plugin structure.
 To help in this process there is a [Yeoman Megadraft Plugin Generator][plugin-generator].
+
+## Contributing
+
+Development of Megadraft happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Megadraft.
+
+### [Contributing Guide](CONTRIBUTING.md)
+
+Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Megadraft.
 
 
 ## License
@@ -133,7 +141,7 @@ The Megadraft website uses a picture from
 [Stocksnap.io by Tim Marshall](https://stocksnap.io/photo/K148YZIFJ3) licensed
 under [CC0 license](https://stocksnap.io/license).
 
-Landing page uses a Megadeth picture by [Ted Van Pelt](https://flic.kr/p/7Pr94f)
+The Landing page uses a Megadeth picture by [Ted Van Pelt](https://flic.kr/p/7Pr94f)
 licensed under [CC-BY](https://creativecommons.org/licenses/by/2.0/).
 
 

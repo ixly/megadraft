@@ -3,6 +3,11 @@
  *
  * License: MIT
  */
+/*
+ * Copyright (c) 2018, Globo.com (https://github.com/globocom)
+ *
+ * License: MIT
+ */
 .toolbar {
   background: yellow;
   height: 0;
@@ -19,7 +24,6 @@
   margin: 0;
   height: 0;
   height: 0;
-  -webkit-transition: height 0.2s ease-in-out;
   transition: height 0.2s ease-in-out;
 }
 
@@ -44,14 +48,27 @@
   color: #FFF;
 }
 
+.toolbar--error ::-webkit-input-placeholder {
+  color: #FFF;
+}
+
+.toolbar--error :-moz-placeholder {
+  color: #FFF;
+}
+
+.toolbar--error ::-moz-placeholder {
+  color: #FFF;
+}
+
+.toolbar--error :-ms-input-placeholder {
+  color: #FFF;
+}
+
 .toolbar__wrapper {
   background-color: #181818;
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
-  left: -50%;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
   position: relative;
-  -webkit-transition: background-color 0.2s ease-in-out;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -73,7 +90,6 @@
   border-style: solid;
   border-color: #181818 transparent transparent;
   margin-left: -8px;
-  -webkit-transition: border-color 0.2s ease-in-out;
   transition: border-color 0.2s ease-in-out;
 }
 
@@ -198,14 +214,12 @@
 .toolbar.white-thin-theme .toolbar__item .toolbar__button {
   height: 45px;
   width: 45px;
-  -webkit-transition: none;
   transition: none;
 }
 
 .toolbar.white-thin-theme .toolbar__item .toolbar__button:hover {
   background-color: #f3f3f3;
   color: #404040;
-  -webkit-transition: none;
   transition: none;
 }
 

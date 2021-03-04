@@ -4,10 +4,14 @@
  * License: MIT
  */
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 
+import { ActionsContext } from "./ActionsProvider";
+import { PLUGINS_MODAL_ADD_PLUGIN } from "../constants";
 
 export default class ModalPluginItem extends Component {
+  static contextType = ActionsContext;
+
   constructor(props) {
     super(props);
     this.handleClick = ::this.handleClick;
@@ -30,16 +34,27 @@ export default class ModalPluginItem extends Component {
       <li
         key={item.type}
         className="megadraft-modal__item"
-        onClick={this.closeModal} >
+        onClick={() => {
+          this.context.onAction({
+            type: PLUGINS_MODAL_ADD_PLUGIN,
+            pluginName: item.title
+          });
+          this.closeModal();
+        }}
+      >
         <Button
-          ref={(el)=>{this.buttonEl = el;}}
+          ref={el => {
+            this.buttonEl = el;
+          }}
           className="megadraft-modal__button"
           title={item.title}
           editorState={this.props.editorState}
-          onChange={this.props.onChange} />
+          onChange={this.props.onChange}
+        />
         <p
           className="megadraft-modal__button__label"
-          onClick={this.handleClick} >
+          onClick={this.handleClick}
+        >
           {item.title}
         </p>
       </li>

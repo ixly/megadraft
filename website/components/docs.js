@@ -6,7 +6,9 @@
 
 import React from "react";
 import Scroll from "react-scroll";
+import { StickyContainer } from "react-sticky";
 
+import MenuBar from "./menubar";
 import Overview from "../../docs/overview.md";
 import Customization from "../../docs/customization.md";
 import Plugins from "../../docs/plugins.md";
@@ -14,7 +16,7 @@ import Serializing from "../../docs/serializing.md";
 import CustomEntities from "../../docs/custom_entities.md";
 import ReactMarkdown from "react-markdown";
 
-import {highlightCode} from "./highlightCode";
+import { highlightCode } from "./highlightCode";
 
 const scroll = Scroll.animateScroll;
 
@@ -26,12 +28,10 @@ const DOCS = {
   "custom-entities": CustomEntities
 };
 
-
 export default class Docs extends React.Component {
-
   componentDidMount() {
     highlightCode(this);
-    scroll.scrollToTop({duration: 0});
+    scroll.scrollToTop({ duration: 0 });
   }
 
   componentDidUpdate() {
@@ -40,12 +40,18 @@ export default class Docs extends React.Component {
   }
 
   render() {
-    const {doc} = this.props.params;
+    const { match } = this.props;
+    const { doc } = match.params;
     return (
-      <div className="container--light">
-        <div className="page__content docs">
-          <ReactMarkdown source={DOCS[doc]} />
-        </div>
+      <div>
+        <StickyContainer>
+          <MenuBar showLeft={true} />
+          <div className="container--light">
+            <div className="page__content docs">
+              <ReactMarkdown source={DOCS[doc]} />
+            </div>
+          </div>
+        </StickyContainer>
       </div>
     );
   }

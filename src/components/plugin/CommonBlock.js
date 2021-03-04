@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 
 import Dropdown from "../../components/Dropdown";
 import {
@@ -17,7 +17,6 @@ import {
   DEFAULT_DISPLAY_KEY
 } from "../../components/plugin/defaults";
 
-
 export default class CommonBlock extends Component {
   constructor(props) {
     super(props);
@@ -26,32 +25,36 @@ export default class CommonBlock extends Component {
   }
 
   _handleDisplayChange(newValue) {
-    this.props.container.updateData({display: newValue});
+    this.props.container.updateData({ display: newValue });
   }
 
-  render(){
+  render() {
     const data = this.props.data;
     const defaults = {
       defaultDisplay: DEFAULT_DISPLAY_KEY,
       displayOptions: DEFAULT_DISPLAY_OPTIONS
     };
     let options = this.props.blockProps.plugin.options || {};
-    options = {...defaults, ...options};
+    options = { ...defaults, ...options };
+
+    const readOnly = this.props.blockProps.getInitialReadOnly();
     const selectedDisplay = data.display || options.defaultDisplay;
 
     return (
-      <BlockWrapper display={selectedDisplay}>
-        { !this.props.blockProps.editorReadOnly &&
-            <BlockControls>
-              <Dropdown
-                items={options.displayOptions}
-                selected={selectedDisplay}
-                onChange={this._handleDisplayChange} />
+      <BlockWrapper readOnly={readOnly} display={selectedDisplay}>
+        {!readOnly && (
+          <BlockControls>
+            <Dropdown
+              items={options.displayOptions}
+              selected={selectedDisplay}
+              onChange={this._handleDisplayChange}
+            />
 
-              <BlockActionGroup items={this.props.actions} />
-            </BlockControls> }
+            <BlockActionGroup items={this.props.actions} />
+          </BlockControls>
+        )}
 
-        { this.props.children }
+        {this.props.children}
       </BlockWrapper>
     );
   }

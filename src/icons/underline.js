@@ -6,13 +6,20 @@
 
 import React from "react";
 
-
 export default class extends React.Component {
   render() {
     return (
-      <span style={{fontWeight: 600, verticalAlign: 'super', fontSize: '1.25em', lineHeight: '26px', textDecoration: 'underline'}}>U</span>
+      <span
+        style={{
+          fontWeight: 600,
+          verticalAlign: "super",
+          fontSize: "1.25em",
+          lineHeight: "26px",
+          textDecoration: "underline"
+        }}
+      >
+        U
+      </span>
     );
   }
 }
-
-

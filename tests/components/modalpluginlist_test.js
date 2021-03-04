@@ -4,11 +4,11 @@
  * License: MIT
  */
 
-import React, {Component} from "react";
-import {mount} from "enzyme";
+import React, { Component } from "react";
+import { mount } from "enzyme";
 import cp from "utils-copy";
 
-import {ModalBody} from "backstage-modal";
+import { ModalBody } from "backstage-modal";
 import ModalPluginList from "../../src/components/ModalPluginList";
 import DEFAULT_PLUGINS from "../../src/plugins/default.js";
 
@@ -27,7 +27,7 @@ class ModalWithPlugins extends Component {
 
   onChange(editorState) {
     this.props.onChange(editorState);
-    this.setState({editorState: editorState});
+    this.setState({ editorState: editorState });
   }
 
   render() {
@@ -61,7 +61,7 @@ describe("Sidebar Modal Component", () => {
     );
   });
 
-  it("should has plugins inside modal", () => {
+  it("should have plugins inside modal", () => {
     const modal = testContext.wrapper.find(ModalBody);
 
     const plugin = modal.find("li");
@@ -69,7 +69,7 @@ describe("Sidebar Modal Component", () => {
     expect(plugin.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("should has the all plugins inside modal", () => {
+  it("should have the all plugins inside modal", () => {
     const modal = testContext.wrapper.find(ModalBody);
 
     const plugin = modal.find(".megadraft-modal__item");

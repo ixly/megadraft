@@ -6,11 +6,20 @@
 
 // i18n shim! I feel bad for doing this =(
 // https://github.com/megawac/async/blob/d2dd36b4558f483682f3c672630fdcb36a96d4d2/lib/async.js#L16
-((typeof self === "object" && self.self === self && self) ||
+(
+  (typeof self === "object" && self.self === self && self) ||
   (typeof global === "object" && global.global === global && global) ||
-  this).__ = (x) => x;
+  this
+).__ = x => {
+  console.warn(
+    "__() has been deprecated and will be removed soon. " +
+      "You can move this code to your app, instead. __() code can be found at " +
+      "https://gist.github.com/marcelometal/768454831c0c10ee03b939187b7bebbf"
+  );
+  return x;
+};
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 import {
   Editor,
   RichUtils,
@@ -18,33 +27,43 @@ import {
   EditorState,
   genKey,
   ContentBlock,
-  SelectionState
+  SelectionState,
+  DefaultDraftBlockRenderMap
 } from "draft-js";
 import Immutable from "immutable";
-
 
 import DefaultToolbar from "./Toolbar";
 import Sidebar from "./Sidebar";
 import Media from "./Media";
+import MoveControl from "./MoveControl";
+import MegadraftBlock from "./MegadraftBlock";
+import { swapDataUp, swapDataDown } from "../swapDataBlock";
+import i18nConfig from "../i18n";
 import notFoundPlugin from "../plugins/not-found/plugin";
 import DEFAULT_PLUGINS from "../plugins/default";
 import DEFAULT_ACTIONS from "../actions/default";
 import DEFAULT_ENTITY_INPUTS from "../entity_inputs/default";
+import ActionsProvider, { defaultAction } from "./ActionsProvider";
 
 const NO_RESET_STYLE_DEFAULT = ["ordered-list-item", "unordered-list-item"];
-
 
 export default class MegadraftEditor extends Component {
   static defaultProps = {
     actions: DEFAULT_ACTIONS,
     blockRendererFn: () => {},
-  }
+    i18n: i18nConfig,
+    language: "en-US"
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       readOnly: this.props.readOnly || false,
-      hasFocus: false
+      hasFocus: false,
+      scrollRef: "",
+      swapUp: false,
+      swapDown: false,
+      didSwap: false
     };
 
     this.onChange = ::this.onChange;
@@ -66,13 +85,36 @@ export default class MegadraftEditor extends Component {
 
     this.plugins = this.getValidPlugins();
     this.entityInputs = this.props.entityInputs || DEFAULT_ENTITY_INPUTS;
-    this.blocksWithoutStyleReset = (this.props.blocksWithoutStyleReset ||
-                                    NO_RESET_STYLE_DEFAULT);
+    this.blocksWithoutStyleReset =
+      this.props.blocksWithoutStyleReset || NO_RESET_STYLE_DEFAULT;
 
     this.pluginsByType = this.getPluginsByType();
 
     this.keyBindings = this.props.keyBindings || [];
 
+    this.onAction = this.props.onAction || defaultAction;
+
+    this.extendedBlockRenderMap = Immutable.OrderedMap().withMutations(r => {
+      for (let [blockType, data] of DefaultDraftBlockRenderMap.entrySeq()) {
+        r.set(blockType, {
+          ...data,
+          wrapper:
+            !this.props.readOnly && this.props.movableBlocks ? (
+              <MoveControl
+                wrapper={data.wrapper}
+                swapUp={this.swapUp}
+                swapDown={this.swapDown}
+                isFirstBlock={this.isFirstBlock}
+                isLastBlock={this.isLastBlock}
+                onAction={this.onAction}
+                isAtomic={blockType === "atomic"}
+              />
+            ) : (
+              <MegadraftBlock wrapper={data.wrapper} />
+            )
+        });
+      }
+    });
   }
 
   getValidPlugins() {
@@ -97,9 +139,9 @@ export default class MegadraftEditor extends Component {
     return pluginsByType;
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     if (this.props.readOnly !== nextProps.readOnly) {
-      this.setState({readOnly: nextProps.readOnly});
+      this.setState({ readOnly: nextProps.readOnly });
     }
   }
 
@@ -107,7 +149,7 @@ export default class MegadraftEditor extends Component {
     this.props.onChange(editorState);
   }
 
-  externalKeyBindings(e): string {
+  externalKeyBindings(e) {
     for (const kb of this.keyBindings) {
       if (kb.isKeyBound(e)) {
         return kb.name;
@@ -132,7 +174,7 @@ export default class MegadraftEditor extends Component {
       }
     }
 
-    const {editorState} = this.props;
+    const { editorState } = this.props;
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.props.onChange(newState);
@@ -147,8 +189,14 @@ export default class MegadraftEditor extends Component {
    * License: MIT
    */
   //Based on https://github.com/icelab/draft-js-block-breakout-plugin
-  resetBlockStyle(editorState, selection, contentState, currentBlock, blockType) {
-    const {List} = Immutable;
+  resetBlockStyle(
+    editorState,
+    selection,
+    contentState,
+    currentBlock,
+    blockType
+  ) {
+    const { List } = Immutable;
     const emptyBlockKey = genKey();
 
     const emptyBlock = new ContentBlock({
@@ -157,24 +205,29 @@ export default class MegadraftEditor extends Component {
       type: blockType,
       depth: 0,
       characterList: List(),
-      inlineStyleRanges: [],
+      inlineStyleRanges: []
     });
     const blockMap = contentState.getBlockMap();
 
-    const blocksBefore = blockMap.toSeq().takeUntil(function (v) {
+    const blocksBefore = blockMap.toSeq().takeUntil(function(v) {
       return v === currentBlock;
     });
-    const blocksAfter = blockMap.toSeq().skipUntil(function (v) {
-      return v === currentBlock;
-    }).rest();
+    const blocksAfter = blockMap
+      .toSeq()
+      .skipUntil(function(v) {
+        return v === currentBlock;
+      })
+      .rest();
 
     const augmentedBlocks = [
       [currentBlock.getKey(), currentBlock],
-      [emptyBlockKey, emptyBlock],
+      [emptyBlockKey, emptyBlock]
     ];
 
     const focusKey = emptyBlockKey;
-    const newBlocks = blocksBefore.concat(augmentedBlocks, blocksAfter).toOrderedMap();
+    const newBlocks = blocksBefore
+      .concat(augmentedBlocks, blocksAfter)
+      .toOrderedMap();
     const newContentState = contentState.merge({
       blockMap: newBlocks,
       selectionBefore: selection,
@@ -187,10 +240,20 @@ export default class MegadraftEditor extends Component {
       })
     });
     const noStyle = Immutable.OrderedSet([]);
-    const resetState = EditorState.push(editorState, newContentState, "split-block");
+    const resetState = EditorState.push(
+      editorState,
+      newContentState,
+      "split-block"
+    );
     const emptySelection = SelectionState.createEmpty(emptyBlockKey);
-    const editorSelected = EditorState.forceSelection(resetState, emptySelection);
-    const noStyleState = EditorState.setInlineStyleOverride(editorSelected, noStyle);
+    const editorSelected = EditorState.forceSelection(
+      resetState,
+      emptySelection
+    );
+    const noStyleState = EditorState.setInlineStyleOverride(
+      editorSelected,
+      noStyle
+    );
     this.props.onChange(noStyleState);
   }
 
@@ -200,12 +263,12 @@ export default class MegadraftEditor extends Component {
     }
 
     if (!event.shiftKey) {
-      const {editorState} = this.props;
+      const { editorState } = this.props;
       const selection = editorState.getSelection();
       const contentState = editorState.getCurrentContent();
       const currentBlock = contentState.getBlockForKey(selection.getEndKey());
       const endOffset = selection.getEndOffset();
-      const atEndOfBlock = (endOffset === currentBlock.getLength());
+      const atEndOfBlock = endOffset === currentBlock.getLength();
       const resetStyleNewLine = this.props.resetStyleNewLine;
       const noReset = this.blocksWithoutStyleReset.includes(currentBlock.type);
 
@@ -223,15 +286,19 @@ export default class MegadraftEditor extends Component {
       return false;
     }
 
-    const {editorState} = this.props;
+    const { editorState } = this.props;
 
     const currentContent = editorState.getCurrentContent();
     const currentSelection = editorState.getSelection();
-    const contentBlock = currentContent.getBlockMap().get(currentSelection.getFocusKey());
+    const contentBlock = currentContent
+      .getBlockMap()
+      .get(currentSelection.getFocusKey());
     const contentText = contentBlock.getText();
 
-    if (contentText.charAt(currentSelection.focusOffset -1) == "\n" ||
-        contentText.charAt(currentSelection.focusOffset) == "\n"){
+    if (
+      contentText.charAt(currentSelection.focusOffset - 1) == "\n" ||
+      contentText.charAt(currentSelection.focusOffset) == "\n"
+    ) {
       return false;
     }
 
@@ -245,7 +312,7 @@ export default class MegadraftEditor extends Component {
   }
 
   setReadOnly(readOnly) {
-    this.setState({readOnly});
+    this.setState({ readOnly });
   }
 
   getReadOnly() {
@@ -258,7 +325,7 @@ export default class MegadraftEditor extends Component {
 
   setInitialReadOnly() {
     let readOnly = this.props.readOnly || false;
-    this.setState({readOnly});
+    this.setState({ readOnly });
   }
 
   handleBlockNotFound(block) {
@@ -269,19 +336,100 @@ export default class MegadraftEditor extends Component {
   }
 
   handleFocus() {
-    this.setState({
-      hasFocus: true
-    });
+    clearTimeout(this.blurTimeoutID);
+
+    if (!this.state.hasFocus) {
+      this.setState({
+        hasFocus: true
+      });
+    }
   }
 
   handleBlur() {
-    this.setState({
-      hasFocus: false
-    });
+    this.blurTimeoutID = setTimeout(() => {
+      if (this.state.hasFocus) {
+        this.setState({
+          hasFocus: false
+        });
+      }
+    }, 200);
+  }
+
+  handleClassEditor(identifier) {
+    const classEditor = this.props.movableBlocks
+      ? `${identifier} movable`
+      : identifier;
+    const contentState = this.props.editorState.getCurrentContent();
+    // If the user changes block type before entering any text, we can
+    // either style the placeholder or hide it.
+    // Class with styling to spacing placeholder.
+    if (!contentState.hasText()) {
+      switch (
+        contentState
+          .getBlockMap()
+          .first()
+          .getType()
+      ) {
+        case "ordered-list-item":
+        case "unordered-list-item":
+        case "header-two":
+        case "blockquote":
+          return `${classEditor} placeholder-hide`;
+      }
+    }
+    return classEditor;
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.blurTimeoutID);
+  }
+
+  componentDidUpdate() {
+    if (this.state.swapUp || this.state.swapDown) {
+      const swapFunction = this.state.swapUp ? swapDataUp : swapDataDown;
+
+      const newEditorState = swapFunction({
+        editorState: this.props.editorState,
+        currentKey: this.state.scrollRef
+      });
+
+      this.onChange(newEditorState);
+      this.setState({
+        didSwap: true,
+        swapUp: false,
+        swapDown: false
+      });
+    } else if (this.state.didSwap) {
+      const control = document.querySelector(`[id*="${this.state.scrollRef}"]`);
+
+      if (control) {
+        const options = control.querySelector(".options");
+        const swapEffect = () => {
+          options.classList.toggle("options--swapped");
+          control.classList.toggle("move-control--swapped");
+        };
+
+        const input = control.querySelector("[type=text]");
+        input && input.focus();
+
+        control.scrollIntoView({ block: "center" });
+        window.scroll(0, window.pageYOffset - control.clientHeight / 2);
+
+        swapEffect();
+
+        setTimeout(() => {
+          swapEffect();
+        }, 300);
+
+        this.setState({
+          didSwap: false,
+          scrollRef: ""
+        });
+      }
+    }
   }
 
   mediaBlockRenderer(block) {
-
     const handled = this.props.blockRendererFn(block);
     if (handled) {
       return handled;
@@ -302,6 +450,7 @@ export default class MegadraftEditor extends Component {
       component: Media,
       editable: false,
       props: {
+        i18n: this.props.i18n[this.props.language],
         plugin: plugin,
         onChange: this.onChange,
         editorState: this.props.editorState,
@@ -310,15 +459,14 @@ export default class MegadraftEditor extends Component {
         getReadOnly: this.getReadOnly,
         getInitialReadOnly: this.getInitialReadOnly,
         setInitialReadOnly: this.setInitialReadOnly,
-        showDataRightsHolder: this.props.showDataRightsHolder,
-        editorReadOnly: this.props.readOnly
+        showDataRightsHolder: this.props.showDataRightsHolder
       }
     };
   }
 
   getEditorState = () => {
     return this.props.editorState;
-  }
+  };
 
   blockStyleFn(contentBlock) {
     const type = contentBlock.getType();
@@ -328,62 +476,114 @@ export default class MegadraftEditor extends Component {
   }
 
   renderSidebar(props) {
-    const {sidebarRendererFn} = this.props;
-    if(typeof sidebarRendererFn === "function") {
+    const { sidebarRendererFn } = this.props;
+    if (typeof sidebarRendererFn === "function") {
       return sidebarRendererFn(props);
     }
     return <Sidebar {...props} />;
   }
 
   renderToolbar(props) {
-    const {Toolbar = DefaultToolbar} = this.props;
+    const { Toolbar = DefaultToolbar } = this.props;
+
     return <Toolbar {...props} />;
   }
 
+  swapUp = currentKey => {
+    document.activeElement.blur();
+
+    this.forceUpdate(() => {
+      this.setState({
+        swapUp: true,
+        swapDown: false,
+        scrollRef: currentKey
+      });
+    });
+  };
+
+  swapDown = currentKey => {
+    document.activeElement.blur();
+
+    this.forceUpdate(() => {
+      this.setState({
+        swapUp: false,
+        swapDown: true,
+        scrollRef: currentKey
+      });
+    });
+  };
+
+  isFirstBlock = currentKey => {
+    const contentState = this.props.editorState.getCurrentContent();
+    return contentState.getFirstBlock().getKey() === currentKey;
+  };
+
+  isLastBlock = currentKey => {
+    const contentState = this.props.editorState.getCurrentContent();
+    return contentState.getLastBlock().getKey() === currentKey;
+  };
+
   render() {
+    const hideSidebarOnBlur = this.props.hideSidebarOnBlur || false;
+    const i18n = this.props.i18n[this.props.language];
+    const classEditor = "megadraft";
+    const identifierEditor = `${classEditor}-editor`;
+
     return (
-      <div className="megadraft">
-        <div
-          className="megadraft-editor"
-          id="megadraft-editor"
-          ref={(el) => { this.editorEl = el; }}
-          onBlur={this.handleBlur}
-          onFocus={this.handleFocus}
-        >
-          { this.props.showSidebar != false && this.renderSidebar({
-            plugins: this.plugins,
-            editorState: this.props.editorState,
-            readOnly: this.state.readOnly,
-            onChange: this.onChange,
-            maxSidebarButtons: this.props.maxSidebarButtons,
-            modalOptions: this.props.modalOptions,
-            submitFileUrl: this.props.submitFileUrl
-          })}
-          <Editor
-            {...this.props}
-            ref={(el) => { this.draftEl = el; }}
-            readOnly={this.state.readOnly}
-            blockRendererFn={this.mediaBlockRenderer}
-            blockStyleFn={this.props.blockStyleFn || this.blockStyleFn}
-            onTab={this.onTab}
-            handleKeyCommand={this.handleKeyCommand}
-            handleReturn={this.props.handleReturn || this.handleReturn}
-            keyBindingFn={this.externalKeyBindings}
-            onChange={this.onChange}
-          />
-          {this.renderToolbar({
-            editor: this.editorEl,
-            draft: this.refs.draft,
-            editorState: this.props.editorState,
-            editorHasFocus: this.state.hasFocus,
-            readOnly: this.state.readOnly,
-            onChange: this.onChange,
-            actions: this.props.actions,
-            theme: this.props.theme,
-            entityInputs: this.entityInputs,
-            shouldDisplayToolbarFn: this.props.shouldDisplayToolbarFn,
-          })}
-        </div>
+      <div className={classEditor}>
+        <ActionsProvider onAction={this.onAction}>
+          <div
+            className={this.handleClassEditor(identifierEditor)}
+            id={this.props.id || identifierEditor}
+            ref={el => {
+              this.editorEl = el;
+            }}
+            onBlur={this.handleBlur}
+            onFocus={this.handleFocus}
+          >
+            {this.props.showSidebar != false &&
+              this.renderSidebar({
+                i18n: i18n,
+                plugins: this.plugins,
+                editorState: this.props.editorState,
+                readOnly: this.state.readOnly,
+                onChange: this.onChange,
+                maxSidebarButtons: this.props.maxSidebarButtons,
+                modalOptions: this.props.modalOptions,
+                editorHasFocus: this.state.hasFocus,
+                hideSidebarOnBlur: hideSidebarOnBlur,
+                submitFileUrl: this.props.submitFileUrl
+              })}
+            <Editor
+              {...this.props}
+              ref={el => {
+                this.draftEl = el;
+              }}
+              readOnly={this.state.readOnly}
+              blockRendererFn={this.mediaBlockRenderer}
+              blockStyleFn={this.props.blockStyleFn || this.blockStyleFn}
+              onTab={this.onTab}
+              handleKeyCommand={this.handleKeyCommand}
+              handleReturn={this.props.handleReturn || this.handleReturn}
+              keyBindingFn={this.externalKeyBindings}
+              onChange={this.onChange}
+              blockRenderMap={this.extendedBlockRenderMap}
+            />
+            {this.renderToolbar({
+              i18n: i18n,
+              editor: this.editorEl,
+              draft: this.draftEl,
+              editorState: this.props.editorState,
+              editorHasFocus: this.state.hasFocus,
+              readOnly: this.state.readOnly,
+              onChange: this.onChange,
+              actions: this.props.actions,
+              theme: this.props.theme,
+              entityInputs: this.entityInputs,
+              shouldDisplayToolbarFn: this.props.shouldDisplayToolbarFn
+            })}
+          </div>
+        </ActionsProvider>
       </div>
     );
   }
