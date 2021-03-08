@@ -209,6 +209,8 @@
   border: none;
 }
 
-.block__input--readonly + svg.block__input__icon {
+.block__input--readonly + svg.block__input__icon,
+.block__input--readonly:hover + svg.block__input__icon,
+.block__input--readonly:focus + svg.block__input__icon {
   display: none;
 }

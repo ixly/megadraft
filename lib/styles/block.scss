@@ -209,8 +209,9 @@
   &--readonly:focus {
     border: none;
   }
-
-  &--readonly + svg.block__input__icon {
+  &--readonly + svg.block__input__icon,
+  &--readonly:hover + svg.block__input__icon,
+  &--readonly:focus + svg.block__input__icon {
     display: none;
   }
 }
