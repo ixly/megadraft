@@ -205,18 +205,10 @@
   font-size: 0.75rem;
 }
 
-.block__input--readonly, .block__input--readonly.block__input--empty, .block__input--readonly:hover {
+.block__input--readonly, .block__input--readonly.block__input--empty, .block__input--readonly:hover, .block__input--readonly:focus {
   border: none;
 }
 
-.block__input--readonly:hover + svg.block__input__icon {
-  display: none;
-}
-
-.block__input--readonly:focus {
-  border: none;
-}
-
-.block__input--readonly:focus + svg.block__input__icon {
+.block__input--readonly + svg.block__input__icon {
   display: none;
 }

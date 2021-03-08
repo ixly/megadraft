@@ -758,19 +758,11 @@
   font-size: 0.75rem;
 }
 
-.megadraft-editor .block__input--readonly, .megadraft-editor .block__input--readonly.block__input--empty, .megadraft-editor .block__input--readonly:hover {
+.megadraft-editor .block__input--readonly, .megadraft-editor .block__input--readonly.block__input--empty, .megadraft-editor .block__input--readonly:hover, .megadraft-editor .block__input--readonly:focus {
   border: none;
 }
 
-.megadraft-editor .block__input--readonly:hover + svg.block__input__icon {
-  display: none;
-}
-
-.megadraft-editor .block__input--readonly:focus {
-  border: none;
-}
-
-.megadraft-editor .block__input--readonly:focus + svg.block__input__icon {
+.megadraft-editor .block__input--readonly + svg.block__input__icon {
   display: none;
 }
 

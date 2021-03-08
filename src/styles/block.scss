@@ -205,17 +205,12 @@
   // Read Only
   &--readonly,
   &--readonly.block__input--empty,
-  &--readonly:hover {
-    border: none;
-  }
-  &--readonly:hover + svg.block__input__icon {
-    display: none;
-  }
-
+  &--readonly:hover,
   &--readonly:focus {
     border: none;
   }
-  &--readonly:focus + svg.block__input__icon {
+
+  &--readonly + svg.block__input__icon {
     display: none;
   }
 }
