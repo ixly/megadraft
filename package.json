@@ -60,7 +60,6 @@
     "react-router-dom": "^5.0.0",
     "react-scroll": "^1.5.4",
     "react-sticky": "^6.0.3",
-    "react-tap-event-plugin": "3.0.3",
     "react-test-renderer": "16.8.6",
     "regenerator-runtime": "^0.13.2",
     "rimraf": "^2.5.2",
