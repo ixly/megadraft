@@ -11,7 +11,7 @@ export default class BlockWrapper extends Component {
     return (
       <div
         className={
-          (this.props.readOnly ? "block__hover--readonly" : "block__hover") +
+          (this.props.readOnly ? "block__hover--readonly " : "block__hover ") +
           this.props.display
         }
       >
