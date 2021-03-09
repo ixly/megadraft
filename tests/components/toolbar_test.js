@@ -4,32 +4,34 @@
  * License: MIT
  */
 
-import React, {Component} from "react";
-import {EditorState, SelectionState} from "draft-js";
-import {mount} from "enzyme";
+import React, { Component } from "react";
+import { EditorState, SelectionState } from "draft-js";
+import { mount } from "enzyme";
 
 import Toolbar from "../../src/components/Toolbar";
 import ToolbarItem from "../../src/components/ToolbarItem";
 
-import {editorStateFromRaw} from "../../src/utils";
+import { editorStateFromRaw } from "../../src/utils";
 import Separator from "../../src/components/Separator";
 import LinkInput from "../../src/entity_inputs/LinkInput";
+import i18nConfig from "../../src/i18n";
 
 export default class ToolbarWrapper extends Component {
   constructor(props) {
     super(props);
-    this.state = {...props};
+    this.state = { ...props };
     this.onChange = ::this.onChange;
   }
 
   onChange(editorState) {
-    this.setState({editorState: editorState});
+    this.setState({ editorState: editorState });
   }
 
   render() {
     return (
       <div ref="editor">
         <Toolbar
+          i18n={i18nConfig["en-US"]}
           ref="toolbar"
           editor={this.refs.editor}
           editorState={this.state.editorState}
@@ -38,6 +40,7 @@ export default class ToolbarWrapper extends Component {
           entityInputs={this.props.entityInputs}
           onChange={this.onChange}
           editorHasFocus={true}
+          shouldDisplayToolbarFn={this.props.shouldDisplayToolbarFn}
         />
       </div>
     );
@@ -49,8 +52,8 @@ const draft = require("draft-js");
 draft.getVisibleSelectionRect = () => {
   return {
     top: 0,
-    left: 0,
-    right: 1
+    left: 100,
+    right: 100
   };
 };
 
@@ -61,7 +64,7 @@ const replaceSelection = (newSelection, wrapper) => {
 
   const editorState = EditorState.forceSelection(oldState, updatedSelection);
 
-  wrapper.setState({editorState: editorState});
+  wrapper.setState({ editorState: editorState });
 };
 
 const FileEntityInput = props => <LinkInput {...props} />;
@@ -76,7 +79,8 @@ describe("Toolbar Component", () => {
       blocks: [
         {
           key: "ag6qs",
-          text: "Hello World!",
+          text:
+            "Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World!",
           type: "unstyled",
           depth: 0,
           inlineStyleRanges: [],
@@ -88,9 +92,9 @@ describe("Toolbar Component", () => {
     testContext = {};
     testContext.clock = jest.useFakeTimers();
     testContext.actions = [
-      {type: "inline", label: "B", style: "BOLD", icon: "svg"},
-      {type: "separator"},
-      {type: "block", label: "H2", style: "header-two", icon: "svg"},
+      { type: "inline", label: "B", style: "BOLD", icon: "svg" },
+      { type: "separator" },
+      { type: "block", label: "H2", style: "header-two", icon: "svg" },
       {
         type: "entity",
         label: "Link",
@@ -105,7 +109,9 @@ describe("Toolbar Component", () => {
         entity: "FILE_LINK",
         icon: "svg"
       },
-      {type: "custom", icon: "svg", action: jest.fn()}
+      { type: "custom", icon: "svg", action: jest.fn() },
+      { type: "custom", icon: "svg", action: jest.fn(), active: () => true },
+      { type: "custom", icon: "svg", action: jest.fn(), active: () => false }
     ];
 
     testContext.entityInputs = {
@@ -119,6 +125,7 @@ describe("Toolbar Component", () => {
         editorState={testContext.editorState}
         actions={testContext.actions}
         entityInputs={testContext.entityInputs}
+        shouldDisplayToolbarFn={() => true}
       />
     );
   });
@@ -138,12 +145,25 @@ describe("Toolbar Component", () => {
       expect(items).toHaveLength(1);
     });
 
-    it("renders as null when readOnly is set", () => {
+    it("renders null when readOnly is set and shouldDisplayToolbarFn returns true", () => {
       const wrapper = mount(
         <ToolbarWrapper
           readOnly
           editorState={testContext.editorState}
           actions={testContext.actions}
+          shouldDisplayToolbarFn={() => true}
+        />
+      );
+      const toolbar = wrapper.find(Toolbar);
+      expect(toolbar.html()).toBeNull();
+    });
+
+    it("renders as null when readOnly is not set and shouldDisplayToolbarFn returns false", () => {
+      const wrapper = mount(
+        <ToolbarWrapper
+          editorState={testContext.editorState}
+          actions={testContext.actions}
+          shouldDisplayToolbarFn={() => false}
         />
       );
       const toolbar = wrapper.find(Toolbar);
@@ -189,65 +209,166 @@ describe("Toolbar Component", () => {
 
         button.simulate("click");
 
-        expect(testContext.actions[5].action).toHaveBeenCalledWith(editorState);
+        expect(testContext.actions[5].action).toHaveBeenCalledWith(
+          editorState,
+          testContext.wrapper.find(Toolbar).props().onChange
+        );
+      });
+
+      it("should not hide toolbar when state changes", () => {
+        const wrapper = mount(
+          <ToolbarWrapper
+            editorState={testContext.editorState}
+            actions={testContext.actions}
+            entityInputs={testContext.entityInputs}
+          />
+        );
+        replaceSelection(
+          {
+            focusOffset: 0,
+            anchorOffset: 5
+          },
+          wrapper
+        );
+        wrapper.update();
+
+        const toolbar = wrapper.find(Toolbar);
+        const nextProps = { editorState: { getCurrentContent: () => "blah" } };
+        toolbar.instance().componentWillReceiveProps(nextProps);
+        expect(toolbar.instance().state.show).toBeTruthy();
+      });
+
+      it("should call preventDefault when active a state", () => {
+        const event = {
+          preventDefault: () => {},
+          target: { localName: "blah" }
+        };
+        jest.spyOn(event, "preventDefault");
+
+        const wrapper = testContext.wrapper.find(".toolbar__wrapper");
+        wrapper.simulate("mouseDown", Object.assign(jest.fn(), event));
+        expect(event.preventDefault).toHaveBeenCalled();
+      });
+
+      it("should change icon color to blue when active state is true", () => {
+        const items = testContext.wrapper.find(ToolbarItem);
+        const toolbarItem = items.at(5).find("li");
+        expect(toolbarItem.hasClass("toolbar__item--active")).toBeFalsy();
+      });
+
+      it("should not change icon color when there is no active handle", () => {
+        const items = testContext.wrapper.find(ToolbarItem);
+        const toolbarItem = items.at(6).find("li");
+        expect(toolbarItem.hasClass("toolbar__item--active")).toBeTruthy();
+      });
+
+      it("should not change icon color to blue when active state is false", () => {
+        const items = testContext.wrapper.find(ToolbarItem);
+        const toolbarItem = items.at(7).find("li");
+        expect(toolbarItem.hasClass("toolbar__item--active")).toBeFalsy();
       });
     });
 
-    it("starts hidden", () => {
-      const toolbarWrapper = testContext.wrapper.find(".toolbar");
-      expect(toolbarWrapper.hasClass("toolbar--open")).toBeFalsy();
+    it("starts hidden when using default shouldDisplayToolbarFn", () => {
+      const wrapper = mount(
+        <ToolbarWrapper
+          editorState={testContext.editorState}
+          actions={testContext.actions}
+          entityInputs={testContext.entityInputs}
+        />
+      );
+      const toolbar = wrapper.find(Toolbar);
+      expect(toolbar.html()).toBeNull();
     });
 
-    it("shows after selection", () => {
+    it("shows after selection when using default shouldDisplayToolbarFn", () => {
+      const wrapper = mount(
+        <ToolbarWrapper
+          editorState={testContext.editorState}
+          actions={testContext.actions}
+          entityInputs={testContext.entityInputs}
+        />
+      );
+
       replaceSelection(
         {
           focusOffset: 0,
           anchorOffset: 5
         },
-        testContext.wrapper
+        wrapper
       );
 
-      testContext.clock.advanceTimersByTime(32);
-      testContext.wrapper.update();
+      wrapper.update();
 
-      const toolbarWrapper = testContext.wrapper.find(".toolbar");
+      const toolbar = wrapper.find(Toolbar);
+      const toolbarWrapper = wrapper.find(".toolbar");
+      expect(toolbar.html()).not.toBeNull();
       expect(toolbarWrapper.hasClass("toolbar--open")).toBeTruthy();
     });
 
-    it("should hide after deselection", () => {
+    it("should hide after deselection when using default shouldDisplayToolbarFn", () => {
+      const wrapper = mount(
+        <ToolbarWrapper
+          editorState={testContext.editorState}
+          actions={testContext.actions}
+          entityInputs={testContext.entityInputs}
+        />
+      );
+
       replaceSelection(
         {
           focusOffset: 0,
           anchorOffset: 5
         },
-        testContext.wrapper
+        wrapper
       );
 
-      testContext.wrapper.update();
+      wrapper.update();
 
       replaceSelection(
         {
           focusOffset: 0,
           anchorOffset: 0
         },
+        wrapper
+      );
+
+      wrapper.update();
+
+      const toolbar = wrapper.find(Toolbar);
+      expect(toolbar.html()).toBeNull();
+    });
+
+    it("should center toolbar above the selection", () => {
+      replaceSelection(
+        {
+          focusOffset: 20,
+          anchorOffset: 10
+        },
         testContext.wrapper
       );
 
       testContext.wrapper.update();
 
       const toolbarWrapper = testContext.wrapper.find(".toolbar");
-      expect(toolbarWrapper.hasClass("toolbar--open")).toBeFalsy();
-    });
-
-    it("should center toolbar above the selection", () => {
-      replaceSelection({focusOffset: 0, anchorOffset: 5}, testContext.wrapper);
-
-      const toolbarWrapper = testContext.wrapper.find(".toolbar");
       const toolbarWrapperNode = toolbarWrapper.getDOMNode();
       testContext.clock.advanceTimersByTime(32);
 
-      expect(toolbarWrapperNode.style.bottom).toEqual("14px");
-      expect(toolbarWrapperNode.style.left).toEqual("0.5px");
+      expect(toolbarWrapperNode.style.top).toEqual("-14px");
+      expect(toolbarWrapperNode.style.left).toEqual("100px");
+    });
+
+    it("should not throw an exception if readOnly = true while there is an exception", () => {
+      replaceSelection(
+        {
+          focusOffset: 0,
+          anchorOffset: 5
+        },
+        testContext.wrapper
+      );
+
+      testContext.wrapper.update();
+      testContext.wrapper.setProps({ readOnly: true });
     });
 
     describe("entity inputs", () => {
@@ -300,7 +421,7 @@ describe("Toolbar Component", () => {
         const inputNode = input.getDOMNode();
         inputNode.value = "http://www.globo.com";
         input.simulate("change");
-        input.simulate("keyDown", {key: "Enter", keyCode: 13, which: 13});
+        input.simulate("keyDown", { key: "Enter", keyCode: 13, which: 13 });
 
         const contentState = testContext.wrapper
           .state("editorState")
@@ -308,9 +429,33 @@ describe("Toolbar Component", () => {
         const blockWithLinkAtBeginning = contentState.getBlockForKey("ag6qs");
         const linkKey = blockWithLinkAtBeginning.getEntityAt(0);
         const linkInstance = contentState.getEntity(linkKey);
-        const {url} = linkInstance.getData();
+        const { url } = linkInstance.getData();
 
         expect(url).toEqual("http://www.globo.com");
+      });
+
+      it("(integration) Should not call preventDefault when is a input", () => {
+        const event = {
+          preventDefault: () => {},
+          target: { localName: "input" }
+        };
+        jest.spyOn(event, "preventDefault");
+
+        const wrapper = testContext.wrapper.find(".toolbar__wrapper");
+        wrapper.simulate("mouseDown", Object.assign(jest.fn(), event));
+        expect(event.preventDefault).not.toHaveBeenCalled();
+      });
+
+      it("(integration) Should not call preventDefault when is a select", () => {
+        const event = {
+          preventDefault: () => {},
+          target: { localName: "select" }
+        };
+        jest.spyOn(event, "preventDefault");
+
+        const wrapper = testContext.wrapper.find(".toolbar__wrapper");
+        wrapper.simulate("mouseDown", Object.assign(jest.fn(), event));
+        expect(event.preventDefault).not.toHaveBeenCalled();
       });
 
       it("(integration) LinkInput should remove an entity when ", () => {
@@ -323,7 +468,7 @@ describe("Toolbar Component", () => {
 
         inputNode.value = "http://www.globo.com";
         input.simulate("change");
-        input.simulate("keyDown", {key: "Enter", keyCode: 13, which: 13});
+        input.simulate("keyDown", { key: "Enter", keyCode: 13, which: 13 });
         // show dialog again
         testContext.linkButton().simulate("click");
         // click on remove
@@ -343,7 +488,6 @@ describe("Toolbar Component", () => {
 
       it("(integration) LinkInput should remove a link backwards", () => {
         testContext.linkButton().simulate("click");
-
         const input = testContext.wrapper
           .find(LinkEntityInput)
           .find(".toolbar__input");
@@ -351,7 +495,7 @@ describe("Toolbar Component", () => {
 
         inputNode.value = "www.globo.com";
         input.simulate("change");
-        input.simulate("keyDown", {key: "Enter", keyCode: 13, which: 13});
+        input.simulate("keyDown", { key: "Enter", keyCode: 13, which: 13 });
         // show dialog again
         testContext.linkButton().simulate("click");
         // click on remove

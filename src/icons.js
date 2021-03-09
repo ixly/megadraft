@@ -32,12 +32,34 @@ import MoreIcon from "./icons/more";
 import CodeInlineIcon from "./icons/code_inline";
 import CodeBlockIcon from "./icons/code_block";
 
-
 const icons = {
-  BoldIcon, ItalicIcon, UnderlineIcon, StrikeThroughIcon, ULIcon, OLIcon, H2Icon, H3Icon, H4Icon,
-  BlockQuoteIcon, LinkIcon, CrossIcon, ImageIcon, VideoIcon, EditIcon, DeleteIcon, CropIcon,
-  MediaBigIcon, MediaMediumIcon, MediaSmallIcon, DropdownArrow, ErrorIcon, UnlinkIcon,
-  CloseIcon, MoreIcon, CodeInlineIcon, CodeBlockIcon
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
+  StrikeThroughIcon,
+  ULIcon,
+  OLIcon,
+  H2Icon,
+  H3Icon,
+  H4Icon,
+  BlockQuoteIcon,
+  LinkIcon,
+  CrossIcon,
+  ImageIcon,
+  VideoIcon,
+  EditIcon,
+  DeleteIcon,
+  CropIcon,
+  MediaBigIcon,
+  MediaMediumIcon,
+  MediaSmallIcon,
+  DropdownArrow,
+  ErrorIcon,
+  UnlinkIcon,
+  CloseIcon,
+  MoreIcon,
+  CodeInlineIcon,
+  CodeBlockIcon
 };
 
 export default icons;

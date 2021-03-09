@@ -14,8 +14,7 @@
 }
 
 .dropdown__wrapper--open {
-  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   color: #333;
 }
 
@@ -37,8 +36,7 @@
 }
 
 .dropdown__arrow--open {
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .dropdown__option {

@@ -8,6 +8,7 @@ Here are the props that `MegadraftEditor` accepts:
 - `plugins`: List of plugins to be used by the editor
 - `editorState`: DraftJS' [editorState][api-reference-editor-state]
 - `onChange`: Function fired when editor state changes
+- `onAction`: (optional) Function fired when the following actions are executed: `SIDEBAR_EXPAND`, `SIDEBAR_SHRINK`, `SIDEBAR_CLICK_MORE`, `SIDEBAR_ADD_PLUGIN`, `PLUGINS_MODAL_CLOSE`, `PLUGINS_MODAL_ADD_PLUGIN`
 - `sidebarRendererFn`: (optional) it is called to render a custom sidebar. This
   method must return a valid React element.
 - `Toolbar`: (optional) a custom toolbar component or a function that returns a
@@ -29,7 +30,32 @@ Here are the props that `MegadraftEditor` accepts:
 - `modalOptions`: (optional) object, height and width of the modal.
   Check the following sections for more info.
 - `shouldDisplayToolbarFn`: (optional) Boolean-valued function fired when
-  editor state changes. It allows to control whether or not the Toolbar should be shown.
+  editor state changes. It allows to control whether or not the Toolbar should
+  be shown.
+- `language`: (optional) Changes the language. This is a string like xx-YY,
+  where xx is a language code and YY is a country code.
+  See [Megadraft strings][i18n-strings].
+- `i18n`: (optional) A dictionary to translate the editor strings.
+   This is an object with at least one language key (one of them needs to be
+   equal to the `language` prop), this `language` is an object with four keys,
+   each of them is a string which will be translated:
+  - `"Type the link and press enter"`: A string that changes the text of the
+     link placeholder.
+  - `"Invalid Link"`: A string that changes the text of invalid links.
+  - `"Can't show plugin, component {{type}} not found."`: Changes the text
+   that will appear when a plugin is missing.
+  - `"Block List"`: A string that changes the block list title.
+  ```js
+    //Example
+        i18n = {
+          "Type the link and press enter": "Type the link and press enter",
+          "Invalid Link": "Invalid Link",
+          "Can't show plugin, component {{type}} not found.":
+             "Can't show plugin, component {{type}} not found.",
+           "Block List": "Block List"
+        }
+- `hideSidebarOnBlur`: (optional) boolean, default false. Hide Sidebar on blur.
+- `movableBlocks`: (optional) boolean, default false. Allows reorder blocks.
 
 Check the following sections for more info.
 
@@ -144,6 +170,9 @@ const customActions = [
     action() {
       // Here goes the code triggered on button click
     },
+    active() {
+      // Return a Boolean to handle the active state of button on Toolbar.
+    }
   },
 ];
 ```
@@ -357,3 +386,4 @@ ReactDOM.render(
 
 [api-reference-editor-state]: https://facebook.github.io/draft-js/docs/api-reference-editor-state.html
 [custom actions]: https://github.com/globocom/megadraft/blob/master/src/actions/default.js
+[i18n-strings]: https://github.com/globocom/megadraft/blob/master/src/i18n.js

@@ -4,6 +4,7 @@
  * License: MIT
  */
 
+@import "_mixins.scss";
 @import "modal.scss";
 
 .megadraft-editor {
@@ -18,4 +19,18 @@
     @import "dropdown.scss";
 
     @import "media.scss";
+
+    @import "move-control.scss";
+
+  &.placeholder-hide {
+    .public-DraftEditorPlaceholder-root {
+      visibility: hidden;
+    }
+  }
+
+  &.movable {
+    .public-DraftEditorPlaceholder-root {
+      padding: 8px 0 0 8px;
+    }
+  }
 }
