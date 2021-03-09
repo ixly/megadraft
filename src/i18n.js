@@ -5,33 +5,21 @@
  */
 
 const i18nConfig = {
-  "en-US": {
-    "Type the link and press enter": "Type the link and press enter",
-    "Invalid Link": "Invalid Link",
-    "Can't show plugin, component {{type}} not found.":
-      "Can't show plugin, component {{type}} not found.",
-    "Can't show plugin, component not found.":
-      "Can't show plugin, component not found.",
-    "Block List": "Block List",
-    "Something went wrong in component '{{type}}'. {{error}}":
-      "Something went wrong in component '{{type}}'. {{error}}",
-    "Something went wrong with the component type.":
-      "Something went wrong with the component type."
+  nl: {
+    "Type the link and press enter": "Typ de link en druk op enter",
+    "Invalid Link": "Ongeldige Link"
   },
-  "pt-BR": {
-    "Type the link and press enter": "Digite o link e pressione enter",
-    "Invalid Link": "Link inválido",
-    "Can't show plugin, component {{type}} not found.":
-      "Não é possível exibir o plugin, componente {{type}} não encontrado",
-    "Can't show plugin, component not found.":
-      "Não é possível exibir o plugin, componente não encontrado",
-    "Block List": "Lista de Blocos",
-    "Something went wrong in component '{{type}}'. {{error}}":
-      "Algo esta errado no componente '{{type}}'. {{error}}",
-    "Something went wrong with the component type.":
-      "Algo esta errado com o tipo do componente"
+  en: {
+    "Type the link and press enter": "Type the link and press enter",
+    "Invalid Link": "Invalid Link"
+  },
+  de: {
+    "Type the link and press enter": "TOTRANSLATE",
+    "Invalid Link": "TOTRANSLATE"
   }
 };
+
+i18nConfig["en-US"] = i18nConfig["en"];
 
 export const replaceData = (str, data) => {
   const rgx = /{{\s?(\w+)\s?}}/gm;
