@@ -4,7 +4,8 @@
  * License: MIT
  */
 
-.block__hover {
+.block__hover,
+.block__hover--readonly {
   padding: 8px;
   margin: -8px;
 
@@ -19,20 +20,15 @@
     display: inline-block;
     margin-left: 15%;
   }
+}
 
-  &:hover {
-    background-color: #eee;
-    border-radius: 4px;
-  }
+.block__hover:hover {
+  background-color: #eee;
+  border-radius: 4px;
 }
 
 .public-DraftEditor-content figure {
   margin: 0;
-}
-
-.block__hover--readonly {
-  padding: 8px;
-  margin: -8px;
 }
 
 .block__wrapper {
@@ -205,12 +201,16 @@
   // Read Only
   &--readonly,
   &--readonly.block__input--empty,
-  &--readonly:hover,
+  &--readonly:hover {
+    border: none;
+  }
+  &--readonly:hover + svg.block__input__icon {
+    display: none;
+  }
+
   &--readonly:focus {
     border: none;
   }
-  &--readonly + svg.block__input__icon,
-  &--readonly:hover + svg.block__input__icon,
   &--readonly:focus + svg.block__input__icon {
     display: none;
   }

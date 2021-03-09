@@ -52,23 +52,27 @@ export default class ImageBlock extends Component {
           <img style={ImageBlockStyle.image} src={this.props.data.src} alt="" />
         </BlockContent>
 
-        <BlockData>
-          <BlockInput
-            placeholder="Caption"
-            value={this.props.data.caption || ""}
-            onChange={this._handleCaptionChange}
-            readOnly={readOnly}
-          />
-
-          {this.props.blockProps.showDataRightsHolder && (
+        {(!readOnly ||
+          this.props.data.caption ||
+          this.props.data.rightsHolder) && (
+          <BlockData>
             <BlockInput
-              placeholder="Rights Holder"
-              value={this.props.data.rightsHolder || ""}
-              onChange={this._handleRightsHolderChange}
+              placeholder="Caption"
+              value={this.props.data.caption || ""}
+              onChange={this._handleCaptionChange}
               readOnly={readOnly}
             />
-          )}
-        </BlockData>
+
+            {this.props.blockProps.showDataRightsHolder && (
+              <BlockInput
+                placeholder="Rights Holder"
+                value={this.props.data.rightsHolder || ""}
+                onChange={this._handleRightsHolderChange}
+                readOnly={readOnly}
+              />
+            )}
+          </BlockData>
+        )}
       </CommonBlock>
     );
   }

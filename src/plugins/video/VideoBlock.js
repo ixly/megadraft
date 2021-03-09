@@ -106,18 +106,22 @@ export default class VideoBlock extends Component {
   }
 
   render() {
+    const readOnly = this.props.blockProps.getInitialReadOnly();
+
     return (
       <CommonBlock {...this.props} actions={this.actions}>
         <BlockContent>{this.renderVideo()}</BlockContent>
 
-        <BlockData>
-          <BlockInput
-            placeholder="Caption"
-            value={this.props.data.caption || ""}
-            onChange={this._handleCaptionChange}
-            readOnly={this.props.blockProps.getInitialReadOnly()}
-          />
-        </BlockData>
+        {(!readOnly || this.props.data.caption) && (
+          <BlockData>
+            <BlockInput
+              placeholder="Caption"
+              value={this.props.data.caption || ""}
+              onChange={this._handleCaptionChange}
+              readOnly={readOnly}
+            />
+          </BlockData>
+        )}
       </CommonBlock>
     );
   }

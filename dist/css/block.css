@@ -3,18 +3,21 @@
  *
  * License: MIT
  */
-.block__hover {
+.block__hover,
+.block__hover--readonly {
   padding: 8px;
   margin: -8px;
 }
 
-.block__hover.small {
+.block__hover.small,
+.block__hover--readonly.small {
   width: 40%;
   display: inline-block;
   margin-left: 30%;
 }
 
-.block__hover.medium {
+.block__hover.medium,
+.block__hover--readonly.medium {
   width: 70%;
   display: inline-block;
   margin-left: 15%;
@@ -27,11 +30,6 @@
 
 .public-DraftEditor-content figure {
   margin: 0;
-}
-
-.block__hover--readonly {
-  padding: 8px;
-  margin: -8px;
 }
 
 .block__wrapper {
@@ -205,12 +203,18 @@
   font-size: 0.75rem;
 }
 
-.block__input--readonly, .block__input--readonly.block__input--empty, .block__input--readonly:hover, .block__input--readonly:focus {
+.block__input--readonly, .block__input--readonly.block__input--empty, .block__input--readonly:hover {
   border: none;
 }
 
-.block__input--readonly + svg.block__input__icon,
-.block__input--readonly:hover + svg.block__input__icon,
+.block__input--readonly:hover + svg.block__input__icon {
+  display: none;
+}
+
+.block__input--readonly:focus {
+  border: none;
+}
+
 .block__input--readonly:focus + svg.block__input__icon {
   display: none;
 }
