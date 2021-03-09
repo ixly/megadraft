@@ -94,6 +94,7 @@
 }
 
 .toolbar__item {
+  vertical-align: middle;
   display: inline-block;
   color: #ccc;
 }
@@ -131,11 +132,11 @@
   border: none;
   color: #fafafa;
   font-size: 0.875rem;
-  height: auto;
+  height: 56px;
   line-height: 1.2rem;
   margin: 0;
   padding: 20px;
-  width: 250px;
+  width: 473px;
 }
 
 .toolbar__input:focus {
@@ -188,7 +189,6 @@
 
 .toolbar.white-thin-theme .toolbar__item {
   color: #404040;
-  vertical-align: middle;
 }
 
 .toolbar.white-thin-theme .toolbar__item:hover {
@@ -225,5 +225,6 @@
 
 .toolbar.white-thin-theme .toolbar__input {
   color: #404040;
-  height: 46px;
+  height: 45px;
+  width: 512px;
 }
