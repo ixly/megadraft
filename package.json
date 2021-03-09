@@ -120,7 +120,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/denistsuman/megadraft.git"
+    "url": "https://github.com/ixly/megadraft.git"
   },
   "files": [
     "dist",
@@ -135,7 +135,7 @@
   "author": "globo.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/denistsuman/megadraft/issues"
+    "url": "https://github.com/ixly/megadraft/issues"
   },
-  "homepage": "https://github.com/denistsuman/megadraft#readme"
+  "homepage": "https://github.com/ixly/megadraft#readme"
 }
