@@ -9,6 +9,7 @@ import { mount } from "enzyme";
 
 import ImageBlock from "../../../src/plugins/image/ImageBlock";
 import icons from "../../../src/icons";
+import i18nConfig from "../../../src/i18n";
 
 describe("ImageBlock", () => {
   let testContext;
@@ -40,6 +41,7 @@ describe("ImageBlock", () => {
         container={testContext}
         blockProps={blockProps}
         data={testContext.data}
+        i18n={i18nConfig["en-US"]}
       />
     );
 

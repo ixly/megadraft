@@ -37,7 +37,7 @@ class MegadraftEditorWrapper extends Component {
   render() {
     return (
       <MegadraftEditor
-        i18n={i18nConfig["en-US"]}
+        language="en-US"
         editorState={this.state.editorState}
         onChange={this.props.onChange}
         keyBindings={this.props.keyBindings}

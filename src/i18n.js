@@ -7,15 +7,28 @@
 const i18nConfig = {
   nl: {
     "Type the link and press enter": "Typ de link en druk op enter",
-    "Invalid Link": "Ongeldige Link"
+    "Invalid Link": "Ongeldige Link",
+    SMALL: "KLEIN",
+    MEDIUM: "GEMIDDELD",
+    BIG: "GROOT",
+    Caption: "Onderschrift"
   },
   en: {
     "Type the link and press enter": "Type the link and press enter",
-    "Invalid Link": "Invalid Link"
+    "Invalid Link": "Invalid Link",
+    SMALL: "SMALL",
+    MEDIUM: "MEDIUM",
+    BIG: "BIG",
+    Caption: "Caption"
   },
   de: {
-    "Type the link and press enter": "TOTRANSLATE",
-    "Invalid Link": "TOTRANSLATE"
+    "Type the link and press enter":
+      "Tippen Sie den Link und drücken Sie auf Enter",
+    "Invalid Link": "Ungültiger Link",
+    SMALL: "KLEIN",
+    MEDIUM: "DURCHSCHNITTLICH",
+    BIG: "GROSS",
+    Caption: "Unterschrift"
   }
 };
 

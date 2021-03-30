@@ -44,6 +44,7 @@ describe("Media Component", () => {
     testContext.blockProps = {};
     testContext.blockProps.editorState = testContext.editorState;
     testContext.blockProps.plugin = DEFAULT_PLUGINS[0];
+    testContext.blockProps.i18n = i18nConfig["en-US"];
     testContext.blockProps.onChange = jest.fn();
     testContext.blockProps.setRea = jest.fn();
     testContext.blockProps.getInitialReadOnly = jest.fn();
@@ -109,7 +110,6 @@ describe("Media Component", () => {
       const blockProps = {};
       blockProps.editorState = testContext.editorState;
       blockProps.plugin = errorPlugin;
-      blockProps.i18n = i18nConfig["en-US"];
       blockProps.onChange = jest.fn();
       blockProps.getEditorState = () => testContext.editorState;
 

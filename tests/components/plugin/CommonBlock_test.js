@@ -10,6 +10,7 @@ import { mount } from "enzyme";
 import icons from "../../../src/icons";
 import Dropdown from "../../../src/components/Dropdown";
 import CommonBlock from "../../../src/components/plugin/CommonBlock";
+import i18nConfig from "../../../src/i18n";
 
 describe("CommonBlock Component", () => {
   let testContext;
@@ -42,6 +43,7 @@ describe("CommonBlock Component", () => {
           actions={actions}
           container={testContext.container}
           data={data}
+          i18n={i18nConfig["en-US"]}
         />
       );
     };

@@ -13,7 +13,7 @@ import {
   BlockWrapper
 } from "../../components/plugin";
 import {
-  DEFAULT_DISPLAY_OPTIONS,
+  defaultDisplayOptions,
   DEFAULT_DISPLAY_KEY
 } from "../../components/plugin/defaults";
 
@@ -32,7 +32,7 @@ export default class CommonBlock extends Component {
     const data = this.props.data;
     const defaults = {
       defaultDisplay: DEFAULT_DISPLAY_KEY,
-      displayOptions: DEFAULT_DISPLAY_OPTIONS
+      displayOptions: defaultDisplayOptions(this.props.i18n)
     };
     let options = this.props.blockProps.plugin.options || {};
     options = { ...defaults, ...options };

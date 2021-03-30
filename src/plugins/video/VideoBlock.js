@@ -115,7 +115,7 @@ export default class VideoBlock extends Component {
         {(!readOnly || this.props.data.caption) && (
           <BlockData>
             <BlockInput
-              placeholder="Caption"
+              placeholder={this.props.i18n["Caption"]}
               value={this.props.data.caption || ""}
               onChange={this._handleCaptionChange}
               readOnly={readOnly}
